@@ -1,0 +1,21 @@
+---
+- name: Install EPEL
+  tags: util
+  sudo: yes
+  when: ansible_distribution == 'CentOS'
+  register: util_register_install_epel
+  template:
+    src=epel.repo.j2
+    dest=/etc/yum.repos.d/epel.repo
+    owner=0
+    group=0
+    mode=0644
+
+- name: Update yum package cache
+  tags: util
+  sudo: yes
+  when: util_register_install_epel.changed
+  command: yum
+      --assumeyes
+      --quiet
+      makecache

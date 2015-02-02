@@ -1,2 +1,40 @@
 ---
-# defaults file for ansible-util
+# Whether to show `ansible_managed` or a fancy cow
+util_template_use_cow: true
+
+# Control how to setup a local path for persistent storage
+#   to use for downloads with Ansible.
+# Base idea is to have a shared workstation with individual
+#   user accounts without local superuser privileges required
+#   to download data to a shared persistent directory.
+#   This enables to download data once from third party network
+#   resources and re-distribute downloaded content to internal
+#   networks.
+util_persistent_data_path_local: /usr/local/src/ansible/data
+util_persistent_data_path_local_owner: 0
+util_persistent_data_path_local_group: 0
+util_persistent_data_path_local_mode: 2777
+
+# Control where to upload persistent data to managed nodes.
+util_persistent_data_path_remote: /usr/local/src/ansible/data
+
+
+# Configure package manager states
+util_package_state_archlinux: present # ['present', 'absent']
+util_package_state_redhat: present    # ['present', 'latest', 'absent']
+util_package_state_debian: installed  # ['installed', 'latest', 'absent']
+
+
+# ansible_os_family == 'Debian'
+util_apt_cache_valid_time: 3600
+
+
+# ansible_os_family == 'RedHat'
+#   when ansible_distribution == 'CentOS'
+util_epel_enable: true
+util_epel_version: 6
+util_epel_baseurl: http://download.fedoraproject.org/pub/epel
+util_epel_mirrorurl: https://mirrors.fedoraproject.org/metalink
+#     enable or disable EPEL debug/source package repositories
+util_epel_enable_debug: false
+util_epel_enable_source: false

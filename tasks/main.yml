@@ -1,2 +1,38 @@
 ---
-# tasks file for ansible-util
+- name: Assert supported platform
+  tags: util
+  assert:
+    that:
+      - ansible_os_family in util_supported_os_families
+
+
+- name: Include OS specific vars
+  tags: util
+  include_vars: "{{ ansible_os_family }}.yml"
+
+- name: Assert role configuration
+  tags: util
+  assert:
+    that:
+      util_package_state in util_package_states
+
+
+- include: selinux.yml
+  tags: util
+
+
+- include: persistence.yml
+  tags: util
+
+
+- include: Debian.yml
+  tags: util
+  when: ansible_os_family == 'Debian'
+
+- include: RedHat.yml
+  tags: util
+  when: ansible_os_family == 'RedHat'
+
+
+- include: dependencies.yml
+  tags: util

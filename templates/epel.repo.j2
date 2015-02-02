@@ -1,0 +1,48 @@
+{% if util_template_use_cow %}
+#  --------------------
+# ( Managed by Ansible )
+#  --------------------
+#   o            .    .     .
+#    o      .  . .     `  ,
+#     o    .; .  : .' :  :  : .
+#      o   i..`: i` i.i.,i  i .
+#       o   `,--.|i |i|ii|ii|i:
+#            UooU\.'@@@@@@`.||'
+#            \__/(@@@@@@@@@@)'
+#                 (@@@@@@@@)
+#                 `YY~~~~YY'
+#                  ||    ||
+{% else %}
+# {{ ansible_managed }}
+{% endif %}
+
+[epel]
+name=Extra Packages for Enterprise Linux - $basearch
+baseurl={{ util_epel_baseurl }}/{{ util_epel_version }}/$basearch
+mirrorlist={{ util_epel_mirrorurl }}?repo=epel-{{ util_epel_version }}&arch=$basearch
+failovermethod=priority
+enabled=1
+gpgcheck=0
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-{{ util_epel_version }}
+
+{% if util_epel_enable_debug %}
+[epel-debug]
+name=Extra Packages for Enterprise Linux - $basearch - Debug
+baseurl={{ util_epel_baseurl }}/{{ util_epel_version }}/$basearch/debug
+mirrorlist={{ util_epel_mirrorurl }}?repo=epel-debug-{{ util_epel_version }}&arch=$basearch
+failovermethod=priority
+enabled=1
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-{{ util_epel_version }}
+{% endif %}
+
+{% if util_epel_enable_source %}
+[epel-source]
+name=Extra Packages for Enterprise Linux - Source
+baseurl={{ util_epel_baseurl }}/{{ util_epel_version }}/SRPMS
+mirrorlist={{ util_epel_mirrorurl }}?repo=epel-source-{{ util_epel_version }}&arch=$basearch
+failovermethod=priority
+enabled=1
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-{{ util_epel_version }}
+{% endif %}

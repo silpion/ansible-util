@@ -1,2 +1,5 @@
 ---
-# vars file for ansible-util
+util_supported_os_families:
+  - Archlinux
+  - Debian
+  - RedHat

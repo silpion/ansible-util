@@ -1,0 +1,7 @@
+---
+- name: Install Ansible module dependencies
+  tags: util
+  sudo: yes
+  with_flattened:
+    - util_package_list_httplib
+  action: "{{ ansible_pkg_mgr }} state={{ util_package_state }} name={{ item }}"

@@ -1,0 +1,13 @@
+---
+util_package_state: "{{ util_package_state_redhat }}"
+
+util_package_states:
+  - present
+  - latest
+  - absent
+
+util_package_list_selinux:
+  - libselinux-python
+
+util_package_list_httplib:
+  - python-httplib2

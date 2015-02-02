@@ -1,0 +1,11 @@
+---
+util_package_state: "{{ util_package_state_archlinux }}"
+
+util_package_states:
+  - present
+  - absent
+
+util_package_list_selinux: []
+
+util_package_list_httplib:
+  - python-httplib2

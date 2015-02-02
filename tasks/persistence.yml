@@ -1,0 +1,18 @@
+---
+- name: Install local persistent data path
+  tags: util
+  sudo: yes
+  local_action: file
+    state=directory
+    dest={{ util_persistent_data_path_local }}
+    owner={{ util_persistent_data_path_local_owner }}
+    group={{ util_persistent_data_path_local_group }}
+    mode={{ util_persistent_data_path_local_mode }}
+
+
+- name: Install remote persistent data path
+  tags: util
+  sudo: yes
+  file:
+    state=directory
+    dest={{ util_persistent_data_path_remote }}

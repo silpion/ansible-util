@@ -1,0 +1,13 @@
+---
+util_package_state: "{{ util_package_state_debian }}"
+
+util_package_states:
+  - installed
+  - latest
+  - absent
+
+util_package_list_selinux:
+  - python-selinux
+
+util_package_list_httplib:
+  - python-httplib2
