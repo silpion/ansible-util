@@ -2,7 +2,9 @@
 - name: Install EPEL
   tags: util
   sudo: yes
-  when: ansible_distribution == 'CentOS'
+  when:
+    - ansible_distribution == 'CentOS'
+    - util_epel_enable
   register: util_register_install_epel
   template:
     src=epel.repo.j2

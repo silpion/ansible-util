@@ -1,13 +1,14 @@
 ---
 - name: Install local persistent data path
   tags: util
-  sudo: yes
+  sudo: "{{ util_local_action_sudo_enable }}"
+  sudo_user: "{{ util_local_action_sudo_user|default(omit) }}"
   local_action: file
     state=directory
     dest={{ util_persistent_data_path_local }}
-    owner={{ util_persistent_data_path_local_owner }}
-    group={{ util_persistent_data_path_local_group }}
-    mode={{ util_persistent_data_path_local_mode }}
+    mode={{ util_persistent_data_path_local_mode|default(omit) }}
+    owner={{ util_persistent_data_path_local_owner|default(omit) }}
+    group={{ util_persistent_data_path_local_group|default(omit) }}
 
 
 - name: Install remote persistent data path
