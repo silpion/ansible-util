@@ -17,13 +17,19 @@ None.
 ## Role Variables
 
 * ``util_template_use_cow``: Whether to add {{ ansible_managed }} or a fancy cow to templates (boolean, default: ``true``)
+* ``util_package_list_custom``: Custom list of packages to be installed (list, default: ``[]``)
+
+### local_action
+
+* ``util_local_action_sudo_enable``: Whether to run local_action with sudo: yes (boolean, default: ``yes``)
+* ``util_local_action_sudo_user``: Configure sudo\_user argument to local\_action tasks (string, default: ``|default(omit)``)
 
 ### Persistency
 
 * ``util_persistent_data_path_local``: Where to download data from the internet to the local machine (string, default: ``/usr/local/src/ansible/data``)
-* ``util_persistent_data_path_local_owner``: Owner for the local persistent data directory (string, default: ``0``)
-* ``util_persistent_data_path_local_group``: Group for the local persistent data directory (string, default: ``0``)
-* ``util_persistent_data_path_local_mode``: Octal access mode for the local persistent data directory (string, default: ``2777``)
+* ``util_persistent_data_path_local_owner``: Owner for the local persistent data directory (string, default: ``|default(omit)``)
+* ``util_persistent_data_path_local_group``: Group for the local persistent data directory (string, default: ``|default(omit)``)
+* ``util_persistent_data_path_local_mode``: Octal access mode for the local persistent data directory (string, default: ``|default(omit)``)
 * ``util_persistent_data_path_local_remote``: Where to upload data from the local machine to the managed node (string, default: ``/usr/local/src/ansible/data``)
 
 ### action: "{{ ansible_pkg_mgr }}"

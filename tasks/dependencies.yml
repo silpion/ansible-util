@@ -4,4 +4,5 @@
   sudo: yes
   with_flattened:
     - util_package_list_httplib
+    - util_package_list_custom
   action: "{{ ansible_pkg_mgr }} state={{ util_package_state }} name={{ item }}"
