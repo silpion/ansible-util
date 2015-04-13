@@ -19,7 +19,22 @@ None.
 * ``util_template_use_cow``: Whether to add {{ ansible_managed }} or a fancy cow to templates (boolean, default: ``true``)
 * ``util_package_list_custom``: Custom list of packages to be installed (list, default: ``[]``)
 
+### become subsystem
+
+* ``util_action_become_enable``: Whether to run tasks with privilege escalation (boolean, default: ``yes``0
+* ``util_local_action_become_enable``: Wether to run local_action tasks with privilege escalation (boolean, default: ``yes``)
+
+The following variables allow to fine tune the become subsystem.
+
+* ``util_action_become_user``: User to escalate privileges to (string, default: ``|default(omit)``)
+* ``util_action_become_method``: Method to use for privilege escalation (string, default: ``|default(omit)``)
+
+* ``util_local_action_become_user``: User to escalate privileges to for local_action tasks (string, default: ``|default(omit)``)
+* ``util_local_action_become_method``: Method to use for privilege escalation for local_action tasks (string, default: ``|default(omit)``)
+
 ### local_action
+
+**NOTE** These variables are deprecated and should no longer be used.
 
 * ``util_local_action_sudo_enable``: Whether to run local_action with sudo: yes (boolean, default: ``yes``)
 * ``util_local_action_sudo_user``: Configure sudo\_user argument to local\_action tasks (string, default: ``|default(omit)``)
