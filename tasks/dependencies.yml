@@ -1,7 +1,9 @@
 ---
 - name: Install Ansible module dependencies
   tags: util
-  sudo: yes
+  become: "{{ util_action_become_enable }}"
+  become_user: "{{ util_action_become_user|default(omit) }}"
+  become_method: "{{ util_action_become_method|default(omit) }}"
   with_flattened:
     - util_package_list_httplib
     - util_package_list_custom
