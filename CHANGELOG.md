@@ -1,3 +1,10 @@
+# 0.2.0
+
+Mark Kusch (2):
+
+* Use new Ansible become subsystem
+* Update documentation for the become subsystem
+
 # 0.1.0
 
 Mark Kusch (4):

@@ -1,8 +1,9 @@
 ---
 - name: Install local persistent data path
   tags: util
-  sudo: "{{ util_local_action_sudo_enable }}"
-  sudo_user: "{{ util_local_action_sudo_user|default(omit) }}"
+  become: "{{ util_local_action_become_enable }}"
+  become_user: "{{ util_local_action_become_user|default(omit) }}"
+  become_method: "{{ util_local_action_become_method|default(omit) }}"
   local_action: file
     state=directory
     dest={{ util_persistent_data_path_local }}
@@ -13,7 +14,9 @@
 
 - name: Install remote persistent data path
   tags: util
-  sudo: yes
+  become: "{{ util_action_become_enable }}"
+  become_user: "{{ util_action_become_user|default(omit) }}"
+  become_method: "{{ util_action_become_method|default(omit) }}"
   file:
     state=directory
     dest={{ util_persistent_data_path_remote }}
