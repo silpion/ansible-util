@@ -1,3 +1,10 @@
+# 0.3.0
+
+Mark Kusch (1):
+
+* Revert to version 0.1.0
+  https://groups.google.com/forum/#!topic/ansible-devel/JlHq-SohYWo
+
 # 0.2.0
 
 Mark Kusch (2):
