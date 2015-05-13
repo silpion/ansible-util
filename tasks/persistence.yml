@@ -1,7 +1,6 @@
 ---
 - name: Install local persistent data path
   tags: util
-  sudo: true
   local_action: file
     state=directory
     dest={{ util_persistent_data_path_local }}
@@ -12,7 +11,6 @@
 
 - name: Install remote persistent data path
   tags: util
-  sudo: true
   file:
     state=directory
     dest={{ util_persistent_data_path_remote }}
