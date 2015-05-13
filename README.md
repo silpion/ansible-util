@@ -77,7 +77,7 @@ effect (see action modules documentation above).
 * ``util_persistent_data_path_local_owner``: Owner for the local persistent data directory (string, default: ``|default(omit)``)
 * ``util_persistent_data_path_local_group``: Group for the local persistent data directory (string, default: ``|default(omit)``)
 * ``util_persistent_data_path_local_mode``: Octal access mode for the local persistent data directory (string, default: ``|default(omit)``)
-* ``util_persistent_data_path_local_remote``: Where to upload data from the local machine to the managed node (string, default: ``{{ ansible_env['HOME'] + '/ansible/assets' }}``)
+* ``util_persistent_data_path_remote``: Where to upload data from the local machine to the managed node (string, default: ``{{ ansible_env['HOME'] + '/ansible/assets' }}``)
 
 ### action: "{{ ansible_pkg_mgr }}"
 
