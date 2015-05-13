@@ -1,7 +1,7 @@
 ---
 - name: Install EPEL
   tags: util
-  sudo: yes
+  sudo: true
   when:
     - ansible_distribution == 'CentOS'
     - util_epel_enable
@@ -15,7 +15,7 @@
 
 - name: Update yum package cache
   tags: util
-  sudo: yes
+  sudo: true
   when: util_register_install_epel.changed
   command: yum
       --assumeyes

@@ -1,7 +1,7 @@
 ---
 - name: Install Ansible module dependencies
   tags: util
-  sudo: yes
+  sudo: true
   with_flattened:
     - util_package_list_httplib
     - util_package_list_custom
