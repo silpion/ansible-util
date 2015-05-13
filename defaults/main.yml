@@ -29,7 +29,7 @@ util_local_action_sudo_enable: true
 #   resources and re-distribute downloaded content to internal
 #   networks.
 #util_persistent_data_path_local: /usr/local/src/ansible/data
-util_persistent_data_path_local: "{{ lookup('env', 'HOME') + '/ansible/assets' }}"
+util_persistent_data_path_local: "{{ lookup('env', 'HOME') + '/.ansible/assets' }}"
 # The following vars may be used to configure the file module
 #   for local_action when creating {# util_persistent_data_path_local #}.
 #   These have no default values and are configured to be
@@ -45,7 +45,7 @@ util_persistent_data_path_local: "{{ lookup('env', 'HOME') + '/ansible/assets' }
 
 # Control where to upload persistent data to managed nodes.
 #util_persistent_data_path_remote: /usr/local/src/ansible/data
-util_persistent_data_path_remote: "{{ ansible_env['HOME'] + '/ansible/assets' }}"
+util_persistent_data_path_remote: "{{ ansible_env['HOME'] + '/.ansible/assets' }}"
 
 
 # Configure package manager states
