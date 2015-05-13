@@ -19,9 +19,56 @@ None.
 * ``util_template_use_cow``: Whether to add {{ ansible_managed }} or a fancy cow to templates (boolean, default: ``true``)
 * ``util_package_list_custom``: Custom list of packages to be installed (list, default: ``[]``)
 
-### local_action
+### action modules
 
-* ``util_local_action_sudo_enable``: Whether to run local_action with sudo: yes (boolean, default: ``yes``)
+As of ansible ``1.9.`` the become framework has been integrated into mainline.
+This role makes the become framework configurable for local_action and action
+modules.
+
+As of ansible ``1.9.`` the keywords
+
+* become
+* become_user
+* become_method
+* sudo
+* sudo_user
+
+do not allow to be configured dynamically with variables, e.g.
+
+    - name: I am some task
+      become: "{{ util_action_become_enable }}"
+      become_user: "{{ util_action_become_user|default('root') }}"
+      become_method: "{{ util_action_become_method|default('sudo') }}"
+      action: file
+        state=absent
+        dest=/tmp/foo
+
+results in an internal error, because there is no variable substitution
+taking place. Configuring sudo and sudo_user arguments does not escalate
+privileges if util_action_become_enable is configured boolean true.
+
+
+I consider this a bug in ansible which is fixed for ``v2``.
+
+
+Anyway the following variables might get configured, but until ansible ``v2``
+comes around the roles (including this one) will still use hardcoded sudo
+configuration.
+
+* ``util_action_become_enable``: Whether to use sudo for action modules (boolean, default: ``true``)
+* ``util_action_become_user``: Username to escalate privileges to for action modules (string, default: ``root``)
+* ``util_action_become_method``: Privileges escalation method to use (string, default: **not in use**)
+* ``util_local_action_become_enable``: Whether to use sudo for local\_action modules (boolean, default: ``true``)
+* ``util_local_action_become_user``: Username to escalate privileges to for local\_action modules (string, default: ``root``)
+* ``util_local_action_become_method``: Privileges escalation method to use (string, default: **not in use**)
+
+#### Backward compatibility
+
+The following variables reside for backward compatibility and will get
+removed in future releases. These variables currently do not have any
+effect (see action modules documentation above).
+
+* ``util_local_action_sudo_enable``: Whether to run local_action with sudo: true (boolean, default: ``true``)
 * ``util_local_action_sudo_user``: Configure sudo\_user argument to local\_action tasks (string, default: ``|default(omit)``)
 
 ### Persistency
