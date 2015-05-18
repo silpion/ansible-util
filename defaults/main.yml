@@ -48,6 +48,11 @@ util_persistent_data_path_local: "{{ lookup('env', 'HOME') + '/.ansible/assets' 
 util_persistent_data_path_remote: "{{ ansible_env['HOME'] + '/.ansible/assets' }}"
 
 
+# Configure various module related settings
+#   configure timeout setting for get_url: module
+util_module_get_url_timeout: 10
+
+
 # Configure package manager states
 util_package_state_archlinux: present # ['present', 'absent']
 util_package_state_redhat: present    # ['present', 'latest', 'absent']

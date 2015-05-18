@@ -85,6 +85,10 @@ effect (see action modules documentation above).
 * ``util_package_state_redhat``: Configure yum module state parameter (string, default: ``present``)
 * ``util_package_state_debian``: Configure apt module state paremeter (string, default: ``installed``)
 
+### modules
+
+* ``util_module_get_url_timeout``: Configure get_url timeout= argument (int, default: ``10``)
+
 ### ansible_os_family == 'Debian'
 
 * ``util_apt_cache_valid_time``: Configure apt module cache_valid_time parameter (int, default: ``3600``)
