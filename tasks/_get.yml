@@ -2,7 +2,6 @@
 # This task will have configurable become framework once v2 arrives
 - name: util._get
   tags: util
-  no_log: true
   local_action: get_url
     url={{ url|mandatory }}
     dest={{ dest|mandatory }}

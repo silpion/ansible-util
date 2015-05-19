@@ -11,6 +11,10 @@
 
 - name: Install remote persistent data path
   tags: util
+  become: yes
   file:
     state=directory
     dest={{ util_persistent_data_path_remote }}
+    owner=0
+    group=0
+    mode=2777

@@ -44,8 +44,7 @@ util_persistent_data_path_local: "{{ lookup('env', 'HOME') + '/.ansible/assets' 
 
 
 # Control where to upload persistent data to managed nodes.
-#util_persistent_data_path_remote: /usr/local/src/ansible/data
-util_persistent_data_path_remote: "{{ ansible_env['HOME'] + '/.ansible/assets' }}"
+util_persistent_data_path_remote: /usr/local/src/ansible/data
 
 
 # Configure various module related settings
