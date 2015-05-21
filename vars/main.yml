@@ -11,3 +11,8 @@ util_supported_os_distributions:
   - Fedora
   - RedHat
   - Ubuntu
+
+util_init_systems:
+  - systemd
+  - sysvinit
+  - upstart
