@@ -1,4 +1,5 @@
 ---
-- hosts: all
+- name: Test ansible-util role
+  hosts: ansibleutiltest
   roles:
     - { role: ansible-util }

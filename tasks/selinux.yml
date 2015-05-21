@@ -1,7 +1,7 @@
 ---
 - name: Update apt package cache
   tags: util
-  sudo: yes
+  become: true
   when: ansible_os_family == 'Debian'
   apt:
     update_cache=yes
@@ -10,6 +10,6 @@
 
 - name: Install Ansible SELinux dependencies
   tags: util
-  sudo: yes
+  become: true
   with_items: util_package_list_selinux
   action: "{{ ansible_pkg_mgr }} state={{ util_package_state }} name={{ item }}"

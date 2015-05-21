@@ -1,7 +1,7 @@
 ---
 - name: Update apt package cache
   tags: util
-  sudo: yes
+  become: true
   apt:
     update_cache=yes
     cache_valid_time={{ util_apt_cache_valid_time }}

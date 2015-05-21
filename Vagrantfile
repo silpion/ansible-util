@@ -5,10 +5,7 @@
 VAGRANT_API_VERSION = '2'
 Vagrant.configure(VAGRANT_API_VERSION) do |config|
 
-  #config.vm.box = 'ubuntu/trusty64'
-  #config.vm.box = 'chef/centos-6.5'
-  #config.vm.box = 'terrywang/archlinux'
-  config.vm.box = 'chef/fedora-20'
+  config.vm.box = 'ubuntu/trusty64'
 
   config.vm.define :ansibleutiltest do |d|
 
