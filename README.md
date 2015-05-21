@@ -18,6 +18,30 @@ None.
 
 * ``util_template_use_cow``: Whether to add {{ ansible_managed }} or a fancy cow to templates (boolean, default: ``true``)
 * ``util_package_list_custom``: Custom list of packages to be installed (list, default: ``[]``)
+* ``util_init_system``: Allow to override init system configuration to be used for service templates (string, default: ``''``)
+
+### util_init_system
+
+Roles supporting a various number of operating systems and versions do require
+to know what init system to configure for services. The util_init_system variable
+allows to hardcode that on inventory level for a specific project and is
+configured dynamically otherwise, e.g.
+
+- Archlinux: systemd
+- CentOS 6: sysvinit
+- CentOS 7: systemd
+- Ubuntu: upstart
+- et cetera
+
+``util_init_system`` value is written to local facts accessable with
+``ansible_local['util']['init']['system']``. This fact may get used in
+other roles to ease configuration of service management.
+
+The following values are supported (and therefor required):
+
+- ``systemd``
+- ``sysvinit``
+- ``upstart``
 
 ### action modules
 
@@ -33,7 +57,7 @@ As of ansible ``1.9.`` the keywords
 * sudo
 * sudo_user
 
-do not allow to be configured dynamically with variables, e.g.
+do not support templating for dynamic configuration, e.g.
 
     - name: I am some task
       become: "{{ util_action_become_enable }}"
@@ -48,7 +72,7 @@ taking place. Configuring sudo and sudo_user arguments does not escalate
 privileges if util_action_become_enable is configured boolean true.
 
 
-I consider this a bug in ansible which is fixed for ``v2``.
+I consider this a bug in ansible which is fixed in ``v2``.
 
 
 Anyway the following variables might get configured, but until ansible ``v2``
@@ -73,11 +97,19 @@ effect (see action modules documentation above).
 
 ### Persistency
 
+#### local
+
 * ``util_persistent_data_path_local``: Where to download data from the internet to the local machine (string, default: ``{{ lookup('env', 'HOME') + '/.ansible/assets' }}``)
 * ``util_persistent_data_path_local_owner``: Owner for the local persistent data directory (string, default: ``|default(omit)``)
 * ``util_persistent_data_path_local_group``: Group for the local persistent data directory (string, default: ``|default(omit)``)
 * ``util_persistent_data_path_local_mode``: Octal access mode for the local persistent data directory (string, default: ``|default(omit)``)
+
+#### remote
+
 * ``util_persistent_data_path_remote``: Where to upload data from the local machine to the managed node (string, default: ``/usr/local/src/ansible/assets``)
+* ``util_persistent_data_path_remote_owner``: Owner for the remote persistent data directory (string, default: ``|default(omit)``)
+* ``util_persistent_data_path_remote_group``: Group for the remote persistent data directory (string, default: ``|default(omit)``)
+* ``util_persistent_data_path_remote_mode``: Octal access mode for the remote persistent data directory (string, default: ``|default(omit)``)
 
 ### action: "{{ ansible_pkg_mgr }}"
 
@@ -96,7 +128,7 @@ effect (see action modules documentation above).
 ### ansible_os_family == 'RedHat'
 
 * ``util_epel_enable``: Whether to enable or disable EPEL repository (boolean, default: ``true``)
-* ``util_epel_version``: EPEL repository version to install (int, default: ``6``)
+* ``util_epel_version``: EPEL repository version to install (int, default: ``{{ ansible_distribution_major_version }}``)
 * ``util_epel_baseurl``: URL for the EPEL repository (string, default: ``http://download.fedoraproject.org/pub/epel``)
 * ``util_epel_mirrorurl``: Mirror for the EPEL repository (string, default: ``https://mirrors.fedoraproject.org/metalink``)
 * ``util_epel_enable_debug``: Whether to enable EPEL debug packages repository (boolean, default: ``false``)

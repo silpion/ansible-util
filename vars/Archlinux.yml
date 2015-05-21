@@ -5,7 +5,5 @@ util_package_states:
   - present
   - absent
 
-util_package_list_selinux: []
-
-util_package_list_httplib:
+util_package_list_ansible_deps:
   - python-httplib2
