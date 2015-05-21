@@ -7,3 +7,5 @@ util_package_states:
 
 util_package_list_ansible_deps:
   - python-httplib2
+
+util_init_system_default: systemd
