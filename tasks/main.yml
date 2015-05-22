@@ -107,7 +107,7 @@
   file:
     state=directory
     dest={{ util_persistent_data_path_remote }}
-    mode={{ util_persistent_data_path_remote_mode|default(0755) }}
+    mode={{ util_persistent_data_path_remote_mode|default(2777) }}
     owner={{ util_persistent_data_path_remote_owner|default(0) }}
     group={{ util_persistent_data_path_remote_group|default(0) }}
 
