@@ -126,6 +126,7 @@
 - name: Install local util facts
   tags: util
   become: yes
+  register: util_registered_install_local_util_facts
   template:
     src=facts.j2
     dest=/etc/ansible/facts.d/util.fact
@@ -135,5 +136,6 @@
 
 - name: Re-read local facts
   tags: util
+  when: util_registered_install_local_util_facts.changed
   setup:
     filter=ansible_local
