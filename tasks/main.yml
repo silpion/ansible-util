@@ -42,6 +42,7 @@
 - name: Register SELinux state
   tags: util
   become: yes
+  always_run: yes
   ignore_errors: true
   failed_when: false
   changed_when: false
@@ -70,12 +71,11 @@
     owner=0
     group=0
     mode=0644
-    seuser=0
 
 - name: Update yum package cache
   tags: util
   become: true
-  when: util_registered_install_epel.changed
+  when: "{{ util_registered_install_epel.changed|default(false) }}"
   command: yum
       --assumeyes
       --quiet
@@ -139,6 +139,6 @@
 
 - name: Re-read local facts
   tags: util
-  when: util_registered_install_local_util_facts.changed
+  when: "{{ util_registered_install_local_util_facts.changed|default(false) }}"
   setup:
     filter=ansible_local
