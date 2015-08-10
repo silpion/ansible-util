@@ -16,3 +16,5 @@ util_init_systems:
   - systemd
   - sysvinit
   - upstart
+
+util_role_version: "{{ lookup('file', role_path + '/VERSION') }}"
