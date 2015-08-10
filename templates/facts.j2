@@ -18,3 +18,8 @@
 
 [init]
 system = {{ util_init_system|default(util_init_system_default) }}
+
+{% if ansible_os_family in ('RedHat') %}
+[epel]
+enabled = {{ 'true' if util_epel_enable else 'false' }}
+{% endif %}
