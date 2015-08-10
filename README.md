@@ -131,6 +131,36 @@ effect (see action modules documentation above).
 * ``util_epel_version``: EPEL repository version to install (int, default: ``{{ ansible_distribution_major_version }}``)
 * ``util_epel_baseurl``: URL for the EPEL repository (string, default: ``http://download.fedoraproject.org/pub/epel``)
 
+## Local facts
+
+This role distributes various variables as local facts for third party roles to use.
+
+### general facts
+
+* ``ansible_local.util.general.template_use_cow``: Whether the cow is used for templates.
+* ``ansible_local.util.general.package_state``: Access configured package state.
+* ``ansible_local.util.general.persistent_data_path``: Access configured persistent data path for Ansible assets.
+
+### init system facts
+
+* ``ansible_local.util.init.system``: Access gathered init system in question.
+
+### module facts
+
+#### apt
+
+* ``ansible_local.util.modules.apt.cache_valid_time``: Access configured apt module cache_valid_time: value.
+
+#### get_url
+
+* ``ansible_local.util.modules.get_url.timeout``: Access configured get_url module timeout: value.
+
+### epel facts
+
+Installed when ansible_os_family == 'RedHat'.
+
+* ``ansible_local.util.epel.enabled``: Whether EPEL is configured to be installed.
+
 ## Dependencies
 
 None.
