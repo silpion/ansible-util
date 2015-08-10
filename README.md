@@ -128,7 +128,6 @@ effect (see action modules documentation above).
 ### ansible_os_family == 'RedHat'
 
 * ``util_epel_enable``: Whether to enable or disable EPEL repository (boolean, default: ``true``)
-* ``util_epel_version``: EPEL repository version to install (int, default: ``{{ ansible_distribution_major_version }}``)
 * ``util_epel_baseurl``: URL for the EPEL repository (string, default: ``http://download.fedoraproject.org/pub/epel``)
 
 ## Local facts
