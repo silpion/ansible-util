@@ -78,9 +78,4 @@ util_apt_cache_valid_time: 3600
 # ansible_os_family == 'RedHat'
 #   when ansible_distribution == 'CentOS'
 util_epel_enable: true
-util_epel_version: "{{ ansible_distribution_major_version }}"
 util_epel_baseurl: https://download.fedoraproject.org/pub/epel
-util_epel_mirrorurl: https://mirrors.fedoraproject.org/metalink
-#     enable or disable EPEL debug/source package repositories
-util_epel_enable_debug: false
-util_epel_enable_source: false

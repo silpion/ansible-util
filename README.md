@@ -130,9 +130,6 @@ effect (see action modules documentation above).
 * ``util_epel_enable``: Whether to enable or disable EPEL repository (boolean, default: ``true``)
 * ``util_epel_version``: EPEL repository version to install (int, default: ``{{ ansible_distribution_major_version }}``)
 * ``util_epel_baseurl``: URL for the EPEL repository (string, default: ``http://download.fedoraproject.org/pub/epel``)
-* ``util_epel_mirrorurl``: Mirror for the EPEL repository (string, default: ``https://mirrors.fedoraproject.org/metalink``)
-* ``util_epel_enable_debug``: Whether to enable EPEL debug packages repository (boolean, default: ``false``)
-* ``util_epel_enable_source``: Whether to enable EPEL source packages repository (boolean, default: ``false``)
 
 ## Dependencies
 
