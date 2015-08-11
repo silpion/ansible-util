@@ -14,6 +14,11 @@
     },
     "get_url": {
       "timeout": "{{ util_module_get_url_timeout }}"
+    },
+    "service": {
+      "manage": "{{ util_module_service_manage }}",
+      "allow_reload": "{{ util_module_service_allow_reload }}",
+      "allow_restart": "{{ util_module_service_allow_restart }}"
     }
 {% if ansible_os_family in ('RedHat') %}
   },
