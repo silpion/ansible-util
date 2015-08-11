@@ -60,6 +60,11 @@ util_persistent_data_path_remote: /usr/local/src/ansible/data
 #   configure timeout setting for get_url: module
 util_module_get_url_timeout: 10
 
+#   service module (for handlers and tasks)
+util_module_service_manage: true
+util_module_service_allow_reload: true
+util_module_service_allow_restart: true
+
 
 # Configure package manager states
 util_package_state_archlinux: present # ['present', 'absent']
@@ -78,9 +83,4 @@ util_apt_cache_valid_time: 3600
 # ansible_os_family == 'RedHat'
 #   when ansible_distribution == 'CentOS'
 util_epel_enable: true
-util_epel_version: "{{ ansible_distribution_major_version }}"
-util_epel_baseurl: http://download.fedoraproject.org/pub/epel
-util_epel_mirrorurl: https://mirrors.fedoraproject.org/metalink
-#     enable or disable EPEL debug/source package repositories
-util_epel_enable_debug: false
-util_epel_enable_source: false
+util_epel_baseurl: https://download.fedoraproject.org/pub/epel

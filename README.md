@@ -1,10 +1,14 @@
 # ansible-util
 
+## Synopsis
+
 Role for base configuration of Ansible roles developed at Silpion.
 
 
-This role implements commen requirements for Ansible itself and
+This role implements common requirements for Ansible itself and
 a persistency paradigm for down- and uploaded data in particular.
+Also, it is used to distribute various facts to achieve a common module behaviour
+across different roles.
 
 Target is to reduce redundancy in Ansible role code and to have
 a single point of dependency in terms of Ansible requirements/
@@ -97,6 +101,10 @@ effect (see action modules documentation above).
 
 ### Persistency
 
+This part of the role is used to provide an asset caching mechanism.
+
+This is done by first downloading the assets to the local machine, then copying them over to the remote node that is beeing managed.
+
 #### local
 
 * ``util_persistent_data_path_local``: Where to download data from the internet to the local machine (string, default: ``{{ lookup('env', 'HOME') + '/.ansible/assets' }}``)
@@ -111,15 +119,12 @@ effect (see action modules documentation above).
 * ``util_persistent_data_path_remote_group``: Group for the remote persistent data directory (string, default: ``|default(omit)``)
 * ``util_persistent_data_path_remote_mode``: Octal access mode for the remote persistent data directory (string, default: ``|default(omit)``)
 
-### action: "{{ ansible_pkg_mgr }}"
-
-* ``util_package_state_archlinux``: Configure pacman module state parameter (string, default: ``present``)
-* ``util_package_state_redhat``: Configure yum module state parameter (string, default: ``present``)
-* ``util_package_state_debian``: Configure apt module state paremeter (string, default: ``installed``)
-
 ### modules
 
 * ``util_module_get_url_timeout``: Configure get_url timeout= argument (int, default: ``10``)
+* ``util_module_service_manage``: Whether Ansible should manage services with the service module (boolean, default: ``true``)
+* ``util_module_service_allow_reload``: Whether Ansible handlers are allowed to reload services (boolean, default: ``true``)
+* ``util_module_service_allow_restart``: Whether Ansible handlers are allowed to restart services (boolean, default: ``true``)
 
 ### ansible_os_family == 'Debian'
 
@@ -128,11 +133,31 @@ effect (see action modules documentation above).
 ### ansible_os_family == 'RedHat'
 
 * ``util_epel_enable``: Whether to enable or disable EPEL repository (boolean, default: ``true``)
-* ``util_epel_version``: EPEL repository version to install (int, default: ``{{ ansible_distribution_major_version }}``)
 * ``util_epel_baseurl``: URL for the EPEL repository (string, default: ``http://download.fedoraproject.org/pub/epel``)
-* ``util_epel_mirrorurl``: Mirror for the EPEL repository (string, default: ``https://mirrors.fedoraproject.org/metalink``)
-* ``util_epel_enable_debug``: Whether to enable EPEL debug packages repository (boolean, default: ``false``)
-* ``util_epel_enable_source``: Whether to enable EPEL source packages repository (boolean, default: ``false``)
+
+## Local facts
+
+This role distributes various variables as local facts for third party roles to use.
+
+The role tries to discover most of these facts, but they can be manually set using the corresponding variables.
+Check variable documentation above for details.
+
+All facts are prefixed with ``ansible_local.util`` so a sample access path could look like this: ``ansible_local.util.init.system``.
+The table below omits this prefix.
+
+| Fact name                         | Fact description                               | Variable name                                 | Distributed when                      |
+|-----------------------------------|------------------------------------------------|-----------------------------------------------|---------------------------------------|
+| ``general.template_use_cow``      | Wether the cow is used for templates           | ``util_template_use_cow``                     | always                                |
+| ``general.package_state``         | Desired package state                          | ``util_package_state_{{ ansible_os_family}}`` | always                                |
+| ``general.persistent_data_path``  | Persistent data path                           | ``util_persistent_data_path_remote``          | always                                |
+| ``init.system``                   | Init system type                               | ``util_init_system``                          | always                                |
+| ``modules.get_url.timeout``       | Timeout for the ``get_url`` module             | ``util_module_get_url_timeout``               | always                                |
+| ``modules.service.manage``        | Wether the service module may be used          | ``util_module_service_manage``                | always                                |
+| ``modules.service.allow_reload``  | Wether the service module may reload services  | ``util_module_service_allow_reload``          | always                                |
+| ``modules.serivce.allow_restart`` | Wether the service module may restart services | ``util_module_service_allow_restart``         | always                                |
+| ``epel.enabled``                  | Wether EPEL is enabled on this system          | ``util_epel_enable``                          | ``{{ ansible_os_family }} == RedHat`` |
+| ``modules.apt.cache_valid_time``  | Apt cache valid time                           | ``util_apt_cache_valid_time``                 | ``{{ ansible_os_family }} == Debian`` |
+
 
 ## Dependencies
 

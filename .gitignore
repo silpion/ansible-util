@@ -20,3 +20,5 @@
 # Custom
 /temp/
 /tmp/
+\.*\.swp
+envvars-vagrant

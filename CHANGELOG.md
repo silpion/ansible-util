@@ -1,3 +1,26 @@
+# Alvaro Aleman (4):
+
+* TDD updated
+* checkmode implemented
+* Removed hard dependency on epel for RedHat, cleaned up epel installation
+* README adjusted
+
+Mark Kusch (15):
+
+* Add EPEL configuration to local facts
+* Remove obsolet util related variables
+* Deploy local facts with json and add several facts
+* Update documentation for local facts
+* Allow to store role version as local fact
+* Remove documentation for non-existing var
+* Add assertion on EPEL configuration
+* Rename local facts according to role variable name for util\_epel\_enable
+* Use complex args coding style
+* Do not uninstall EPEL package conditionally
+* Add vagrant environment for CentOS 7
+* Allow to configure facts for service management with Ansible
+* Add apt facts in ansible\_os\_family == "Debian" only
+
 # 0.4.0
 
 Mark Kusch (19):
@@ -43,7 +66,7 @@ Mark Kusch (4):
 * Remove empty handlers file from repository
 * Allow installation of custom packages
 * Do not install EPEL configuration if it should not get installed
-* Smart configuration for local_action tasks
+* Smart configuration for local\_action tasks
 
 # 0.0.1
 
