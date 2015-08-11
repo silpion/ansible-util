@@ -9,9 +9,11 @@
     "system": "{{ util_init_system|default(util_init_system_default) }}"
   },
   "modules": {
+{% if ansible_os_family in ('Debian') %}
     "apt": {
       "cache_valid_time": "{{ util_apt_cache_valid_time }}"
     },
+{% endif %}
     "get_url": {
       "timeout": "{{ util_module_get_url_timeout }}"
     },
