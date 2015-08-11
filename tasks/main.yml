@@ -26,6 +26,13 @@
       - util_package_state in util_package_states
       - util_init_system|default(util_init_system_default) in util_init_systems
 
+- name: Assert EPEL configuration
+  tags: util
+  when: ansible_local.util.epel.enable is defined
+  assert:
+    that:
+      - util_epel_enable|bool == ansible_local.util.epel.enable|bool
+
 
 # Manage package installation of Ansible dependencies
 #   ansible_os_family == 'Debian'
@@ -36,6 +43,7 @@
   apt:
     update_cache=true
     cache_valid_time={{ util_apt_cache_valid_time }}
+
 
 #   We need to install Python SELinux bindings to perform filesystem operations
 #     with Ansible if SELinux is enabled
@@ -65,17 +73,12 @@
     - util_epel_enable
     - ansible_os_family == 'RedHat'
   register: util_registered_install_epel
-  action: "{{ ansible_pkg_mgr }} state=installed name={{ util_epel_baseurl }}/epel-release-latest-{{ ansible_distribution_major_version }}.noarch.rpm disable_gpg_check=yes"
+  yum:
+    state={{ util_package_state }}
+    name={{ util_epel_baseurl }}/epel-release-latest-{{ ansible_distribution_major_version }}.noarch.rpm
+    disable_gpg_check=true
+    update_cache=true
 
-- name: Update yum package cache
-  tags: util
-  become: true
-  when: "{{ util_registered_install_epel.changed|default(false) }}"
-  command: yum
-      --assumeyes
-      --quiet
-      --enablerepo epel
-      makecache
 
 - name: Install Ansible module dependencies from EPEL
   tags: util

@@ -1,20 +1,26 @@
-{% if util_template_use_cow %}
-#  --------------------
-# ( Managed by Ansible )
-#  --------------------
-#   o            .    .     .
-#    o      .  . .     `  ,
-#     o    .; .  : .' :  :  : .
-#      o   i..`: i` i.i.,i  i .
-#       o   `,--.|i |i|ii|ii|i:
-#            UooU\.'@@@@@@`.||'
-#            \__/(@@@@@@@@@@)'
-#                 (@@@@@@@@)
-#                 `YY~~~~YY'
-#                  ||    ||
+{
+  "general": {
+    "role_version": "{{ util_role_version }}",
+    "template_use_cow": "{{ util_template_use_cow }}",
+    "package_state": "{{ util_package_state }}",
+    "persistent_data_path": "{{ util_persistent_data_path_remote }}"
+  },
+  "init": {
+    "system": "{{ util_init_system|default(util_init_system_default) }}"
+  },
+  "modules": {
+    "apt": {
+      "cache_valid_time": "{{ util_apt_cache_valid_time }}"
+    },
+    "get_url": {
+      "timeout": "{{ util_module_get_url_timeout }}"
+    }
+{% if ansible_os_family in ('RedHat') %}
+  },
+  "epel": {
+    "enable": "{{ 'true' if util_epel_enable else 'false' }}"
+  }
 {% else %}
-# {{ ansible_managed }}
+  }
 {% endif %}
-
-[init]
-system = {{ util_init_system|default(util_init_system_default) }}
+}
