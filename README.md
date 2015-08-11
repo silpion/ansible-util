@@ -120,6 +120,9 @@ effect (see action modules documentation above).
 ### modules
 
 * ``util_module_get_url_timeout``: Configure get_url timeout= argument (int, default: ``10``)
+* ``util_module_service_manage``: Whether Ansible should manage services with the service module (boolean, default: ``true``)
+* ``util_module_service_allow_reload``: Whether Ansible handlers are allowed to reload services (boolean, default: ``true``)
+* ``util_module_service_allow_restart``: Whether Ansible handlers are allowed to restart services (boolean, default: ``true``)
 
 ### ansible_os_family == 'Debian'
 
@@ -153,6 +156,12 @@ This role distributes various variables as local facts for third party roles to 
 #### get_url
 
 * ``ansible_local.util.modules.get_url.timeout``: Access configured get_url module timeout: value.
+
+#### service
+
+* ``ansible_local.util.modules.service.manage``: Access configuration for managing services with Ansible.
+* ``ansible_local.util.modules.service.allow_reload``: Access configuration for reloading services with Ansible.
+* ``ansible_local.util.modules.serivce.allow_restart``: Access configuration for restarting services with Ansible.
 
 ### epel facts
 

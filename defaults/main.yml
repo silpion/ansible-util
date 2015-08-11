@@ -60,6 +60,11 @@ util_persistent_data_path_remote: /usr/local/src/ansible/data
 #   configure timeout setting for get_url: module
 util_module_get_url_timeout: 10
 
+#   service module (for handlers and tasks)
+util_module_service_manage: true
+util_module_service_allow_reload: true
+util_module_service_allow_restart: true
+
 
 # Configure package manager states
 util_package_state_archlinux: present # ['present', 'absent']
