@@ -1,4 +1,16 @@
-# Alvaro Aleman (4):
+# 1.1.0
+
+Alvaro Aleman (1):
+
+* added libsemanage-python to util\_package\_list\_selinux
+
+Mark Kusch (1):
+
+* Do not yum makecache all the time
+
+# 1.0.0
+
+Alvaro Aleman (4):
 
 * TDD updated
 * checkmode implemented
