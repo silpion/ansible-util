@@ -76,7 +76,6 @@
   yum:
     state: "{{ util_package_state }}"
     name: "{{ util_epel_baseurl }}/epel-release-latest-{{ ansible_distribution_major_version }}.noarch.rpm"
-    update_cache: true
     disable_gpg_check: true
 
 - name: Install Ansible module dependencies from EPEL
