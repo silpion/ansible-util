@@ -14,3 +14,15 @@
         name: antivirus_can_scan_system
         state: true
         persistent: true
+
+    - name: Test seport module
+      tags:
+        - util
+        - test
+      when: ansible_os_family == 'RedHat'
+      become: true
+      seport:
+        state: present
+        ports: '6080'
+        proto: tcp
+        setype: http_port_t
