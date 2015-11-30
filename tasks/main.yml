@@ -66,12 +66,40 @@
 
 
 #   ansible_os_family == 'RedHat'
+
+## The point of this is to avoid changed events from the 'Install EPEL' task
+## when  the role gets executed in checkmode.
+## Root cause why we need this woraround is the yum
+## module always generating a changed event when used with an
+## url as source in check mode
+## Bugreport: https://github.com/ansible/ansible-modules-core/issues/2392
+- name: Register installed repos
+  tags: util
+  become: true
+  changed_when: false
+  when:
+    - ansible_os_family == 'RedHat'
+    ## We don't need to execute this if util already installed epel
+    ### More human-readable would be:
+    ### 'not (ansible_local.util is defined and ansible_local.util.epel.enable)'
+    ### But that doesn't work, because apparently the 'defined' test can not be negated
+    - not ansible_local.util is undefined and not ansible_local.util.epel.enable
+  always_run: true
+  register: util_registered_installed_repos
+  command: yum repolist
+
 - name: Install EPEL
   tags: util
   become: true
   when:
     - util_epel_enable
     - ansible_os_family == 'RedHat'
+    ## We don't need to execute this if util already installed epel
+    ### More human-readable would be:
+    ### 'not (ansible_local.util is defined and ansible_local.util.epel.enable)'
+    ### But that doesn't work, because apparently the 'defined' test can not be negated
+    - not ansible_local.util is undefined and not ansible_local.util.epel.enable
+    - ('epel' not in util_registered_installed_repos.stdout)
   register: util_registered_install_epel
   yum:
     state: "{{ util_package_state }}"
