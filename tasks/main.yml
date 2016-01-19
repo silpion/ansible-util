@@ -7,6 +7,11 @@
       - ansible_distribution in util_supported_os_distributions
 
 
+- name: Include --check mode detection
+  tags: util
+  include: _check.yml
+
+
 - name: Include OS specific vars
   tags: util
   include_vars: "{{ ansible_os_family }}.yml"
@@ -49,8 +54,8 @@
 #     with Ansible if SELinux is enabled
 - name: Register SELinux state
   tags: util
-  become: yes
-  always_run: yes
+  become: true
+  always_run: true
   ignore_errors: true
   failed_when: false
   changed_when: false
@@ -59,19 +64,19 @@
 
 - name: Install Python SELinux bindings
   tags: util
-  become: yes
+  become: true
   when: util_registered_selinux_state.rc == 0
   with_items: util_package_list_selinux
-  action: "{{ ansible_pkg_mgr }} state={{ util_package_state }} name={{ item }}"
+  action: "{{ ansible_pkg_mgr }}"
+  args:
+    state: "{{ util_package_state }}"
+    name: "{{ item }}"
 
-
-#   ansible_os_family == 'RedHat'
 
 ## The point of this is to avoid changed events from the 'Install EPEL' task
-## when  the role gets executed in checkmode.
-## Root cause why we need this woraround is the yum
-## module always generating a changed event when used with an
-## url as source in check mode
+## when the role gets executed in --check mode.
+## This work-arounds the yum module always generating a changed event
+## when used with an url as source in --check mode
 ## Bugreport: https://github.com/ansible/ansible-modules-core/issues/2392
 - name: Register installed repos
   tags: util
@@ -79,11 +84,7 @@
   changed_when: false
   when:
     - ansible_os_family == 'RedHat'
-    ## We don't need to execute this if util already installed epel
-    ### More human-readable would be:
-    ### 'not (ansible_local.util is defined and ansible_local.util.epel.enable)'
-    ### But that doesn't work, because apparently the 'defined' test can not be negated
-    - not ansible_local.util is undefined and not ansible_local.util.epel.enable
+    - ansible_local.util.epel.enable is undefined or ansible_local.util.epel.enable != true
   always_run: true
   register: util_registered_installed_repos
   command: yum repolist
@@ -94,13 +95,8 @@
   when:
     - util_epel_enable
     - ansible_os_family == 'RedHat'
-    ## We don't need to execute this if util already installed epel
-    ### More human-readable would be:
-    ### 'not (ansible_local.util is defined and ansible_local.util.epel.enable)'
-    ### But that doesn't work, because apparently the 'defined' test can not be negated
-    - not ansible_local.util is undefined and not ansible_local.util.epel.enable
-    - ('epel' not in util_registered_installed_repos.stdout)
-  register: util_registered_install_epel
+    - ansible_local.util.epel.enable is undefined
+    - "'epel' not in util_registered_installed_repos.stdout"
   yum:
     state: "{{ util_package_state }}"
     name: "{{ util_epel_baseurl }}/epel-release-latest-{{ ansible_distribution_major_version }}.noarch.rpm"
@@ -112,6 +108,7 @@
   with_items: util_package_list_ansible_deps_epel
   when:
     - util_epel_enable
+    - util_fact_check_mode != true
     - ansible_os_family == 'RedHat'
   action: "{{ ansible_pkg_mgr }} state={{ util_package_state }} name={{ item }}"
 
@@ -150,7 +147,7 @@
 # Add some facts for other roles to use
 - name: Install Ansible facts.d directory
   tags: util
-  become: yes
+  become: true
   file:
     state: directory
     dest: /etc/ansible/facts.d
@@ -160,7 +157,7 @@
 
 - name: Install local util facts
   tags: util
-  become: yes
+  become: true
   register: util_registered_install_local_util_facts
   template:
     src: facts.j2
