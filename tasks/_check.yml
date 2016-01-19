@@ -1,0 +1,19 @@
+---
+# Some modules do not support check-mode. These might add required
+# resources for other tasks/modules which cannot run without
+# check-mode detection, e.g. installation of packages from EPEL
+# (- name: Install Ansible module dependencies from EPEL)
+# will fail on initial run of the role when --check mode is active.
+#
+# This behaviour might get seen at a lot of places. util provides
+# a run-time fact to configure conditionals on.
+- name: Detect --check mode
+  tags: util
+  register: util_registered_detect_check_mode
+  changed_when: false
+  command: "true"
+
+- name: Configure --check mode fact
+  tags: util
+  set_fact:
+    util_fact_check_mode: "{{ true if util_registered_detect_check_mode.skipped is defined else false }}"
