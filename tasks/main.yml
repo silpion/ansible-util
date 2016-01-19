@@ -147,7 +147,7 @@
 # Add some facts for other roles to use
 - name: Install Ansible facts.d directory
   tags: util
-  become: yes
+  become: true
   file:
     state: directory
     dest: /etc/ansible/facts.d
@@ -157,7 +157,7 @@
 
 - name: Install local util facts
   tags: util
-  become: yes
+  become: true
   register: util_registered_install_local_util_facts
   template:
     src: facts.j2
