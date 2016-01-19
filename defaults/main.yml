@@ -12,14 +12,6 @@ util_local_action_become_enable: true
 util_local_action_become_user: root
 util_local_action_become_method: sudo
 
-# Configure local_action tasks sudo configuration
-util_local_action_sudo_enable: true
-# You can configure the sudo_user argument for local_action
-#   tasks with the following var. This has no default value
-#   and is configured to be omitted in the task.
-# - {# util_local_action_sudo_user #}
-
-
 # Control how to setup a local path for persistent storage
 #   to use for downloads with Ansible.
 # Base idea is to have a shared workstation with individual

@@ -16,20 +16,41 @@ dependencies.
 
 ## Requirements
 
-None.
+* privilege escalation
+
+## Role library like methods
+
+The util role provides tasks to be included from other roles for
+various re-occuring challenges, one of which is the ``Persistency``
+paradigm described below.
+
+### Check mode detection
+
+``tasks/_check.yml`` may get included to detect whether Ansible is
+in ``--check`` mode operations. This sets a boolean runtime fact
+``util_fact_check_mode``.
+
+``` yaml
+- name: Include check mode detection
+  include: _check.yml
+
+- name: Do something when NOT in --check mode
+  when: util_fact_check_mode != true
+  action: ...
+```
 
 ## Role Variables
 
-* ``util_template_use_cow``: Whether to add {{ ansible_managed }} or a fancy cow to templates (boolean, default: ``true``)
+* ``util_template_use_cow``: Whether to add ``{{ ansible_managed }}`` or a fancy cow to templates (boolean, default: ``true``)
 * ``util_package_list_custom``: Custom list of packages to be installed (list, default: ``[]``)
-* ``util_init_system``: Allow to override init system configuration to be used for service templates (string, default: ``''``)
+* ``util_init_system``: Allow to override init system configuration to be used for service templates (string, default: ``undefined``)
 
 ### util_init_system
 
 Roles supporting a various number of operating systems and versions do require
-to know what init system to configure for services. The util_init_system variable
-allows to hardcode that on inventory level for a specific project and is
-configured dynamically otherwise, e.g.
+to know what init system to configure for services. The ``util_init_system``
+variable allows to hardcode that on inventory level for a specific project and
+is configured dynamically otherwise, e.g.
 
 - Archlinux: systemd
 - CentOS 6: sysvinit
@@ -38,7 +59,7 @@ configured dynamically otherwise, e.g.
 - et cetera
 
 ``util_init_system`` value is written to local facts accessable with
-``ansible_local['util']['init']['system']``. This fact may get used in
+``ansible_local.util.init.system``. This fact may get used in
 other roles to ease configuration of service management.
 
 The following values are supported (and therefor required):
@@ -49,61 +70,21 @@ The following values are supported (and therefor required):
 
 ### action modules
 
-As of ansible ``1.9.`` the become framework has been integrated into mainline.
-This role makes the become framework configurable for local_action and action
-modules.
+This role makes the ``become`` framework configurable for local\_action
+and action modules.
 
-As of ansible ``1.9.`` the keywords
-
-* become
-* become_user
-* become_method
-* sudo
-* sudo_user
-
-do not support templating for dynamic configuration, e.g.
-
-    - name: I am some task
-      become: "{{ util_action_become_enable }}"
-      become_user: "{{ util_action_become_user|default('root') }}"
-      become_method: "{{ util_action_become_method|default('sudo') }}"
-      action: file
-        state=absent
-        dest=/tmp/foo
-
-results in an internal error, because there is no variable substitution
-taking place. Configuring sudo and sudo_user arguments does not escalate
-privileges if util_action_become_enable is configured boolean true.
-
-
-I consider this a bug in ansible which is fixed in ``v2``.
-
-
-Anyway the following variables might get configured, but until ansible ``v2``
-comes around the roles (including this one) will still use hardcoded sudo
-configuration.
-
-* ``util_action_become_enable``: Whether to use sudo for action modules (boolean, default: ``true``)
+* ``util_action_become_enable``: Whether to use privilege escalation for action modules (boolean, default: ``true``)
 * ``util_action_become_user``: Username to escalate privileges to for action modules (string, default: ``root``)
 * ``util_action_become_method``: Privileges escalation method to use (string, default: **not in use**)
-* ``util_local_action_become_enable``: Whether to use sudo for local\_action modules (boolean, default: ``true``)
+* ``util_local_action_become_enable``: Whether to use privilege escalation for local\_action modules (boolean, default: ``true``)
 * ``util_local_action_become_user``: Username to escalate privileges to for local\_action modules (string, default: ``root``)
 * ``util_local_action_become_method``: Privileges escalation method to use (string, default: **not in use**)
-
-#### Backward compatibility
-
-The following variables reside for backward compatibility and will get
-removed in future releases. These variables currently do not have any
-effect (see action modules documentation above).
-
-* ``util_local_action_sudo_enable``: Whether to run local_action with sudo: true (boolean, default: ``true``)
-* ``util_local_action_sudo_user``: Configure sudo\_user argument to local\_action tasks (string, default: ``|default(omit)``)
 
 ### Persistency
 
 This part of the role is used to provide an asset caching mechanism.
-
-This is done by first downloading the assets to the local machine, then copying them over to the remote node that is beeing managed.
+This is done by first downloading the assets to the local machine,
+then copying them over to the remote node that is beeing managed.
 
 #### local
 
@@ -121,7 +102,7 @@ This is done by first downloading the assets to the local machine, then copying 
 
 ### modules
 
-* ``util_module_get_url_timeout``: Configure get_url timeout= argument (int, default: ``10``)
+* ``util_module_get_url_timeout``: Configure ``get_url`` timeout= argument (int, default: ``10``)
 * ``util_module_service_manage``: Whether Ansible should manage services with the service module (boolean, default: ``true``)
 * ``util_module_service_allow_reload``: Whether Ansible handlers are allowed to reload services (boolean, default: ``true``)
 * ``util_module_service_allow_restart``: Whether Ansible handlers are allowed to restart services (boolean, default: ``true``)
@@ -178,7 +159,7 @@ Apache Version 2.0
 This role provides integration tests using the Ruby RSpec/serverspec framework
 with a few drawbacks at the time of writing this documentation.
 
-- Currently supports ansible_os_family == 'Debian' only.
+- Currently supports ansible\_os\_family == 'Debian' only.
 
 Running integration tests requires a number of dependencies being
 installed. As this role uses Ruby RSpec there is the need to have
