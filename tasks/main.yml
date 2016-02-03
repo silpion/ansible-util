@@ -121,9 +121,11 @@
   action: "{{ ansible_pkg_mgr }} state={{ util_package_state }} name={{ item }}"
 
 # Manage persistency for downloading and distributing assets
-# TODO [kraM] Make become configurable when v2 has arrived - Thu 21 May 2015 10:23:35 AM CEST
 - name: Install local persistent data path
   tags: util
+  become: "{{ util_local_action_become_enable }}"
+  become_user: "{{ util_local_action_become_user }}"
+  become_method: "{{ util_local_action_become_method }}"
   local_action: file
   args:
     state: directory
@@ -132,10 +134,11 @@
     owner: "{{ util_persistent_data_path_local_owner|default(omit) }}"
     group: "{{ util_persistent_data_path_local_group|default(omit) }}"
 
-# TODO [kraM] Make become configurable when v2 has arrived - Thu 21 May 2015 10:23:35 AM CEST
 - name: Install remote persistent data path
   tags: util
-  become: true
+  become: "{{ util_action_become_enable }}"
+  become_user: "{{ util_action_become_user }}"
+  become_method: "{{ util_action_become_method }}"
   file:
     state: directory
     dest: "{{ util_persistent_data_path_remote }}"
