@@ -128,3 +128,5 @@
 - name: Include local facts tasks
   tags: util
   include: ../../silpion.lib/tasks/localfacts.yml
+  vars:
+    namespace: util
