@@ -1,0 +1,4 @@
+---
+- src: https://github.com/silpion/ansible-lib
+  name: silpion.lib
+  version: 2.0.0-rc1
