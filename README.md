@@ -29,8 +29,8 @@ values for roles developed at [Silpion][1].
       util_persistent_data_path_local_owner: shared_user
       util_persistent_data_path_local_group: shared_group
       util_persistent_data_path_remote_mode: 755
-      util_persistent_data_path_remote_owner remote_user
-      util_persistent_data_path_remote_group remote_group
+      util_persistent_data_path_remote_owner: remote_user
+      util_persistent_data_path_remote_group: remote_group
       util_module_get_url_timeout: 12
       util_module_service_manage: true
       util_module_service_allow_reload: true
