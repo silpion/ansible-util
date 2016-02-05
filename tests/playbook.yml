@@ -10,7 +10,7 @@
         - test
       when:
         - ansible_os_family == 'RedHat'
-        - util_fact_check_mode != true
+        - not lib_fact_check_mode
       become: true
       seboolean:
         name: antivirus_can_scan_system
