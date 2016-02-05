@@ -7,16 +7,14 @@
       - ansible_distribution in util_supported_os_distributions
 
 
-- name: Include OS specific vars
+- name: Include --check mode detection
   tags: util
-  include_vars: "{{ ansible_os_family }}.yml"
+  include: ../../silpion.lib/tasks/checkmodedetection.yml
 
-- name: Include distribution specific vars
+
+- name: Include OS specific configuration
   tags: util
-  with_first_found:
-    - "{{ ansible_distribution }}-{{ ansible_distribution_major_version }}.yml"
-    - "{{ ansible_distribution }}.yml"
-  include_vars: "{{ item }}"
+  include: ../../silpion.lib/tasks/os-specific-vars.yml
 
 
 - name: Assert role configuration
@@ -26,6 +24,10 @@
       - util_package_state in util_package_states
       - util_init_system|default(util_init_system_default) in util_init_systems
 
+
+# The role does not allow to re-configure whether EPEL repository is
+# managed once it has been applied once.
+# This protects the role in various edge cases to function properly.
 - name: Assert EPEL configuration
   tags: util
   when: ansible_local.util.epel.enable is defined
@@ -49,8 +51,8 @@
 #     with Ansible if SELinux is enabled
 - name: Register SELinux state
   tags: util
-  become: yes
-  always_run: yes
+  become: true
+  always_run: true
   ignore_errors: true
   failed_when: false
   changed_when: false
@@ -59,20 +61,39 @@
 
 - name: Install Python SELinux bindings
   tags: util
-  become: yes
+  become: true
   when: util_registered_selinux_state.rc == 0
   with_items: util_package_list_selinux
-  action: "{{ ansible_pkg_mgr }} state={{ util_package_state }} name={{ item }}"
+  action: "{{ ansible_pkg_mgr }}"
+  args:
+    state: "{{ util_package_state }}"
+    name: "{{ item }}"
 
 
-#   ansible_os_family == 'RedHat'
+## The point of this is to avoid changed events from the 'Install EPEL' task
+## when the role gets executed in --check mode.
+## This work-arounds the yum module always generating a changed event
+## when used with an url as source in --check mode
+## Bugreport: https://github.com/ansible/ansible-modules-core/issues/2392
+- name: Register installed repos
+  tags: util
+  become: true
+  changed_when: false
+  when:
+    - ansible_os_family == 'RedHat'
+    - ansible_local.util.epel.enable is undefined or ansible_local.util.epel.enable != true
+  always_run: true
+  register: util_registered_installed_repos
+  command: yum repolist
+
 - name: Install EPEL
   tags: util
   become: true
   when:
     - util_epel_enable
     - ansible_os_family == 'RedHat'
-  register: util_registered_install_epel
+    - ansible_local.util.epel.enable is undefined
+    - "'epel' not in util_registered_installed_repos.stdout"
   yum:
     state: "{{ util_package_state }}"
     name: "{{ util_epel_baseurl }}/epel-release-latest-{{ ansible_distribution_major_version }}.noarch.rpm"
@@ -83,9 +104,13 @@
   become: true
   with_items: util_package_list_ansible_deps_epel
   when:
-    - util_epel_enable
     - ansible_os_family == 'RedHat'
-  action: "{{ ansible_pkg_mgr }} state={{ util_package_state }} name={{ item }}"
+    - util_epel_enable
+    - not lib_fact_check_mode
+  action: "{{ ansible_pkg_mgr }}"
+  args:
+    state: "{{ util_package_state }}"
+    name: "{{ item }}"
 
 - name: Install Ansible module dependencies
   tags: util
@@ -93,56 +118,15 @@
   with_flattened:
     - util_package_list_ansible_deps
     - util_package_list_custom
-  action: "{{ ansible_pkg_mgr }} state={{ util_package_state }} name={{ item }}"
-
-# Manage persistency for downloading and distributing assets
-# TODO [kraM] Make become configurable when v2 has arrived - Thu 21 May 2015 10:23:35 AM CEST
-- name: Install local persistent data path
-  tags: util
-  local_action: file
+  action: "{{ ansible_pkg_mgr }}"
   args:
-    state: directory
-    dest: "{{ util_persistent_data_path_local }}"
-    mode: "{{ util_persistent_data_path_local_mode|default(omit) }}"
-    owner: "{{ util_persistent_data_path_local_owner|default(omit) }}"
-    group: "{{ util_persistent_data_path_local_group|default(omit) }}"
-
-# TODO [kraM] Make become configurable when v2 has arrived - Thu 21 May 2015 10:23:35 AM CEST
-- name: Install remote persistent data path
-  tags: util
-  become: true
-  file:
-    state: directory
-    dest: "{{ util_persistent_data_path_remote }}"
-    mode: "{{ util_persistent_data_path_remote_mode|default(2777) }}"
-    owner: "{{ util_persistent_data_path_remote_owner|default(0) }}"
-    group: "{{ util_persistent_data_path_remote_group|default(0) }}"
+    state: "{{ util_package_state }}"
+    name: "{{ item }}"
 
 
 # Add some facts for other roles to use
-- name: Install Ansible facts.d directory
+- name: Include local facts tasks
   tags: util
-  become: yes
-  file:
-    state: directory
-    dest: /etc/ansible/facts.d
-    owner: 0
-    group: 0
-    mode: 0755
-
-- name: Install local util facts
-  tags: util
-  become: yes
-  register: util_registered_install_local_util_facts
-  template:
-    src: facts.j2
-    dest: /etc/ansible/facts.d/util.fact
-    owner: 0
-    group: 0
-    mode: 0644
-
-- name: Re-read local facts
-  tags: util
-  when: "{{ util_registered_install_local_util_facts.changed|default(false) }}"
-  setup:
-    filter: ansible_local
+  include: ../../silpion.lib/tasks/localfacts.yml
+  vars:
+    namespace: util

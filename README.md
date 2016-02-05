@@ -1,35 +1,111 @@
 # ansible-util
 
-## Synopsis
+Manage basic Ansible requirements and provide default configuration
+values for roles developed at [Silpion][1].
 
-Role for base configuration of Ansible roles developed at Silpion.
+# Synopsis
 
+```yaml
+- name: Maintain basic Ansible requirements
+  hosts: all
+  roles:
+    - role: ansible-util
+```
 
-This role implements common requirements for Ansible itself and
-a persistency paradigm for down- and uploaded data in particular.
-Also, it is used to distribute various facts to achieve a common module behaviour
-across different roles.
+```yaml
+- name: Maintain basic Ansible requirements
+  hosts: debians
+  roles:
+    - role: ansible-util
+      util_template_use_cow: false
+      util_action_become_enable: true
+      util_action_become_user: root
+      util_action_become_method: sudo
+      util_local_action_become_enable: true
+      util_local_action_become_user: root
+      util_local_action_become_method: sudo
+      util_persistent_data_path_local: /path/to/shared/local/directory
+      util_persistent_data_path_local_mode: 2777
+      util_persistent_data_path_local_owner: shared_user
+      util_persistent_data_path_local_group: shared_group
+      util_persistent_data_path_remote_mode: 755
+      util_persistent_data_path_remote_owner: remote_user
+      util_persistent_data_path_remote_group: remote_group
+      util_module_get_url_timeout: 12
+      util_module_service_manage: true
+      util_module_service_allow_reload: true
+      util_module_service_allow_restart: true
+      util_package_state_debian: installed
+      util_package_list_custom:
+        - foo
+      utiL_apt_cache_valid_time: 3600
+```
 
-Target is to reduce redundancy in Ansible role code and to have
-a single point of dependency in terms of Ansible requirements/
-dependencies.
+# Description
 
-## Requirements
+Role for base configuration of Ansible roles developed at [Silpion][1].
 
-None.
+Any role developed at [Silpion][1] uses util configuration variables
+as default for their own variables, e.g. [ansible-java][2] role has
+the following default configuration:
 
-## Role Variables
+* ``java_template_use_cow: "{{ util_template_use_cow|default(true) }}"``
 
-* ``util_template_use_cow``: Whether to add {{ ansible_managed }} or a fancy cow to templates (boolean, default: ``true``)
+This role further implements common requirements for Ansible itself
+and provides earliest access to manage EPEL on RHEL based systems, e.g.
+manage SELinux related topics.
+
+# Dependencies
+
+[``silpion.util``][3] role depends on the [``silpion.lib``][4] role. This
+is configured for the ``ansible-galaxy install`` command in
+**requirements.yml**.
+
+**NOTE**: Ensure ``silpion.lib`` role is getting installed as ``silpion.lib``.
+There are hardcoded references to this name.
+
+```sh
+# Install silpion.lib role with ansible-galaxy
+ansible-galaxy install --role-file requirements.yml
+```
+
+# Compatibility
+
+Starting with version ``2.N`` this role drops support for includable
+tasks, e.g. ``_get.yml`` or ``_put.yml``. These are now implemented
+in ``silpion.lib`` role, which follows being a library better than
+this role ever did and ever will.
+
+# Requirements
+
+* privilege escalation
+
+# Role Variables
+
+Mentioned above most of these variables are defined to configure
+downstream roles. Any downstream role (regarding ``util`` and ``lib``)
+should use defaults based on variables in this roles defaults
+configuration. That means:
+
+``silpion.lib`` uses defaults based on ``silpion.util``. Any Silpion role
+uses defaults either based on ``lib`` or ``util``, which effectively means
+that any role should be configurable with variables from ``silpion.util``.
+
+If this is not the case in downstream roles this is considered a bug
+and we are most happy for filed issues or pull requests.
+
+## General configuration
+
+* ``util_template_use_cow``: Whether to add ``{{ ansible_managed }}`` or a fancy cow to templates (boolean, default: ``true``)
 * ``util_package_list_custom``: Custom list of packages to be installed (list, default: ``[]``)
-* ``util_init_system``: Allow to override init system configuration to be used for service templates (string, default: ``''``)
+* ``util_init_system``: Allow to override init system configuration to be used for service templates (string, default: ``undefined``)
 
 ### util_init_system
 
 Roles supporting a various number of operating systems and versions do require
-to know what init system to configure for services. The util_init_system variable
-allows to hardcode that on inventory level for a specific project and is
-configured dynamically otherwise, e.g.
+to know what init system to configure for services. The ``util_init_system``
+variable allows to hardcode that on inventory level for a specific project and
+is configured dynamically otherwise, e.g.
 
 - Archlinux: systemd
 - CentOS 6: sysvinit
@@ -38,7 +114,7 @@ configured dynamically otherwise, e.g.
 - et cetera
 
 ``util_init_system`` value is written to local facts accessable with
-``ansible_local['util']['init']['system']``. This fact may get used in
+``ansible_local.util.init.system``. This fact may get used in
 other roles to ease configuration of service management.
 
 The following values are supported (and therefor required):
@@ -49,61 +125,27 @@ The following values are supported (and therefor required):
 
 ### action modules
 
-As of ansible ``1.9.`` the become framework has been integrated into mainline.
-This role makes the become framework configurable for local_action and action
-modules.
+This role makes the ``become`` framework configurable for local\_action
+and action modules.
 
-As of ansible ``1.9.`` the keywords
-
-* become
-* become_user
-* become_method
-* sudo
-* sudo_user
-
-do not support templating for dynamic configuration, e.g.
-
-    - name: I am some task
-      become: "{{ util_action_become_enable }}"
-      become_user: "{{ util_action_become_user|default('root') }}"
-      become_method: "{{ util_action_become_method|default('sudo') }}"
-      action: file
-        state=absent
-        dest=/tmp/foo
-
-results in an internal error, because there is no variable substitution
-taking place. Configuring sudo and sudo_user arguments does not escalate
-privileges if util_action_become_enable is configured boolean true.
-
-
-I consider this a bug in ansible which is fixed in ``v2``.
-
-
-Anyway the following variables might get configured, but until ansible ``v2``
-comes around the roles (including this one) will still use hardcoded sudo
-configuration.
-
-* ``util_action_become_enable``: Whether to use sudo for action modules (boolean, default: ``true``)
+* ``util_action_become_enable``: Whether to use privilege escalation for action modules (boolean, default: ``true``)
 * ``util_action_become_user``: Username to escalate privileges to for action modules (string, default: ``root``)
 * ``util_action_become_method``: Privileges escalation method to use (string, default: **not in use**)
-* ``util_local_action_become_enable``: Whether to use sudo for local\_action modules (boolean, default: ``true``)
+
+* ``util_local_action_become_enable``: Whether to use privilege escalation for local\_action modules (boolean, default: ``true``)
 * ``util_local_action_become_user``: Username to escalate privileges to for local\_action modules (string, default: ``root``)
 * ``util_local_action_become_method``: Privileges escalation method to use (string, default: **not in use**)
 
-#### Backward compatibility
-
-The following variables reside for backward compatibility and will get
-removed in future releases. These variables currently do not have any
-effect (see action modules documentation above).
-
-* ``util_local_action_sudo_enable``: Whether to run local_action with sudo: true (boolean, default: ``true``)
-* ``util_local_action_sudo_user``: Configure sudo\_user argument to local\_action tasks (string, default: ``|default(omit)``)
-
 ### Persistency
 
-This part of the role is used to provide an asset caching mechanism.
+Data persistency is now managed in ``silpion.lib`` role, where
 
-This is done by first downloading the assets to the local machine, then copying them over to the remote node that is beeing managed.
+* ``tasks/datapersistency.yml`` ensures the required directories being available
+* ``tasks/get_url.yml`` can get used to download assets and
+* ``tasks/copy.yml`` can get used to upload assets
+
+The following variables are used in ``silpion.lib`` role as defaults
+for the persistency paradigma.
 
 #### local
 
@@ -121,16 +163,22 @@ This is done by first downloading the assets to the local machine, then copying 
 
 ### modules
 
-* ``util_module_get_url_timeout``: Configure get_url timeout= argument (int, default: ``10``)
+The following variables are used as global configuration options for
+Ansible modules in general.
+
+* ``util_module_get_url_timeout``: Configure ``get_url`` timeout= argument (int, default: ``10``)
 * ``util_module_service_manage``: Whether Ansible should manage services with the service module (boolean, default: ``true``)
 * ``util_module_service_allow_reload``: Whether Ansible handlers are allowed to reload services (boolean, default: ``true``)
 * ``util_module_service_allow_restart``: Whether Ansible handlers are allowed to restart services (boolean, default: ``true``)
 
 ### ansible_os_family == 'Debian'
 
-* ``util_apt_cache_valid_time``: Configure apt module cache_valid_time parameter (int, default: ``3600``)
+* ``util_apt_cache_valid_time``: Configure apt module cache\_valid\_time parameter (int, default: ``3600``)
 
 ### ansible_os_family == 'RedHat'
+
+These variables are used to control EPEL installation on RHEL based
+systems.
 
 * ``util_epel_enable``: Whether to enable or disable EPEL repository (boolean, default: ``true``)
 * ``util_epel_baseurl``: URL for the EPEL repository (string, default: ``http://download.fedoraproject.org/pub/epel``)
@@ -147,6 +195,7 @@ The table below omits this prefix.
 
 | Fact name                         | Fact description                               | Variable name                                 | Distributed when                      |
 |-----------------------------------|------------------------------------------------|-----------------------------------------------|---------------------------------------|
+| ``general.role_version``          | util role version                              | lookup from ``vars/main.yml``                 | always                                |
 | ``general.template_use_cow``      | Wether the cow is used for templates           | ``util_template_use_cow``                     | always                                |
 | ``general.package_state``         | Desired package state                          | ``util_package_state_{{ ansible_os_family}}`` | always                                |
 | ``general.persistent_data_path``  | Persistent data path                           | ``util_persistent_data_path_remote``          | always                                |
@@ -165,9 +214,11 @@ None.
 
 ## Example Playbook
 
-    - hosts: all
-      roles:
-         - { role: ansible-util }
+```yaml
+- hosts: all
+  roles:
+    - role: ansible-util
+```
 
 ## License
 
@@ -178,7 +229,7 @@ Apache Version 2.0
 This role provides integration tests using the Ruby RSpec/serverspec framework
 with a few drawbacks at the time of writing this documentation.
 
-- Currently supports ansible_os_family == 'Debian' only.
+- Currently supports ansible\_os\_family == 'Debian' only.
 
 Running integration tests requires a number of dependencies being
 installed. As this role uses Ruby RSpec there is the need to have
@@ -201,6 +252,12 @@ Ruby with rake and bundler available.
 ## Author information
 
 Mark Kusch @silpion.de mark.kusch
+
+
+[1]: http://silpion.de
+[2]: https://github.com/silpion/ansible-java
+[3]: https://github.com/silpion/ansible-util
+[4]: https://github.com/silpion/ansible-lib
 
 
 <!-- vim: set nofen ts=4 sw=4 et: -->
