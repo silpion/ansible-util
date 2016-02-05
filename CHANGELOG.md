@@ -1,3 +1,17 @@
+# 2.0.0
+
+Alvaro Aleman (1):
+
+* Avoid executing Install epel task when epel is already installed
+
+Mark Kusch (17):
+
+* Default to not using privilege escalation when local\_action
+* Implement TODOs for configurable privilege escalation
+* This role now requires Ansible version 2.0.0.2
+* Use common tasks from silpion.lib role
+* Update documentation for 2.0.0
+
 # 1.1.0
 
 Alvaro Aleman (1):
