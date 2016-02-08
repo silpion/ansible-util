@@ -1,3 +1,9 @@
+# 2.0.2
+
+Mark Kusch (1):
+
+* Fix deprecation warning for ansible-galaxy
+
 # 2.0.1
 
 Mark Kusch (1):
