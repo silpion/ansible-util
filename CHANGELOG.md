@@ -1,3 +1,9 @@
+# 2.0.1
+
+Mark Kusch (1):
+
+* HACK ansible-galaxy when recursing into dependencies
+
 # 2.0.0
 
 Alvaro Aleman (1):
