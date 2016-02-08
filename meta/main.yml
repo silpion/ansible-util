@@ -24,4 +24,5 @@ galaxy_info:
   categories:
   - system
 dependencies:
-  - { role: "https://github.com/silpion/ansible-lib,,silpion.lib" }
+  src: "https://github.com/silpion/ansible-lib"
+  name: silpion.lib
