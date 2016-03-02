@@ -1,0 +1,3 @@
+---
+util_init_service_dir_default: /etc/init.d
+util_init_service_mode_default: 755
