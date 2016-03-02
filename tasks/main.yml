@@ -25,6 +25,11 @@
       - util_init_system|default(util_init_system_default) in util_init_systems
 
 
+- name: Include service management configuration
+  tags: util
+  include_vars: vars/service/{{ util_init_system|default(util_init_system_default) }}.yml
+
+
 # The role does not allow to re-configure whether EPEL repository is
 # managed once it has been applied once.
 # This protects the role in various edge cases to function properly.
@@ -63,7 +68,7 @@
   tags: util
   become: true
   when: util_registered_selinux_state.rc == 0
-  with_items: util_package_list_selinux
+  with_items: "{{ util_package_list_selinux }}"
   action: "{{ ansible_pkg_mgr }}"
   args:
     state: "{{ util_package_state }}"
@@ -102,7 +107,7 @@
 - name: Install Ansible module dependencies from EPEL
   tags: util
   become: true
-  with_items: util_package_list_ansible_deps_epel
+  with_items: "{{ util_package_list_ansible_deps_epel }}"
   when:
     - ansible_os_family == 'RedHat'
     - util_epel_enable
@@ -116,8 +121,8 @@
   tags: util
   become: true
   with_flattened:
-    - util_package_list_ansible_deps
-    - util_package_list_custom
+    - "{{ util_package_list_ansible_deps }}"
+    - "{{ util_package_list_custom }}"
   action: "{{ ansible_pkg_mgr }}"
   args:
     state: "{{ util_package_state }}"
