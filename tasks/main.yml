@@ -11,12 +11,12 @@
   tags: util
   become: true
   when: "{{ util_fact_ssh_pipelining }}"
-  lineinfile:
-    dest: /etc/sudoers
-    regexp: 'Defaults[ \t]+requiretty'
-    state: absent
   vars:
     ansible_ssh_pipelining: false
+  lineinfile:
+    state: absent
+    dest: /etc/sudoers
+    regexp: 'Defaults[ \t]+requiretty'
 
 - name: Assert supported platform
   tags: util
