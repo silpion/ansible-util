@@ -10,7 +10,7 @@
 - name: Disable requiretty in SUDO
   tags: util
   become: true
-    when: ansible_ssh_pipelining
+  when: ansible_ssh_pipelining
   lineinfile:
     dest: /etc/sudoers
     regexp: 'Defaults[ \t]+requiretty'
