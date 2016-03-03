@@ -3,20 +3,16 @@
 # We need to do this early to make the rest work with pipelining.
 # Eventually this will not be necessary anymore. There is a workaround in
 # ansible devel: https://github.com/ansible/ansible/pull/13200
-#
-# I was surprised that this seems to work before the python selinux bindings
-# are installed but in my test on a centos7 VM it worked.
-#
 - name: Disable requiretty in SUDO
   tags: util
   become: true
-  when: ansible_ssh_pipelining
+  when: ansible_ssh_pipelining == true
   lineinfile:
     dest: /etc/sudoers
     regexp: 'Defaults[ \t]+requiretty'
     state: absent
   vars:
-    ansible_ssh_pipelining: False
+    ansible_ssh_pipelining: false
 
 - name: Assert supported platform
   tags: util
