@@ -123,6 +123,26 @@ The following values are supported (and therefor required):
 - ``sysvinit``
 - ``upstart``
 
+#### init system configuration
+
+Init systems today have different requirements when it comes to service
+deployment, e.g. SysV requires init scripts to be executable while
+upstart and Systemd discourage this.
+
+util provides the following additional facts for service configuration.
+
+* ``ansible_local.util.init.service_dir``
+* ``ansible_local.util.init.service_mode``
+
+These can be configured/hardcoded with the following variables and are
+configured dynamicallly otherwise, e.g.
+
+- systemd: /etc/systemd/system with mode 644
+- sysvinit: /etc/init.d with mode 755
+
+* ``util_init_service_dir``: Override service directory
+* ``util_init_service_mode``: Override service file mode
+
 ### action modules
 
 This role makes the ``become`` framework configurable for local\_action
@@ -200,6 +220,8 @@ The table below omits this prefix.
 | ``general.package_state``         | Desired package state                          | ``util_package_state_{{ ansible_os_family}}`` | always                                |
 | ``general.persistent_data_path``  | Persistent data path                           | ``util_persistent_data_path_remote``          | always                                |
 | ``init.system``                   | Init system type                               | ``util_init_system``                          | always                                |
+| ``init.service_dir``              | Init system service files directory            | ``util_init_service_dir``                     | always                                |
+| ``init.service_mode``             | Init system service files mode                 | ``util_init_service_mode``                    | always                                |
 | ``modules.get_url.timeout``       | Timeout for the ``get_url`` module             | ``util_module_get_url_timeout``               | always                                |
 | ``modules.service.manage``        | Wether the service module may be used          | ``util_module_service_manage``                | always                                |
 | ``modules.service.allow_reload``  | Wether the service module may reload services  | ``util_module_service_allow_reload``          | always                                |

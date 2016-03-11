@@ -6,7 +6,9 @@
     "persistent_data_path": "{{ util_persistent_data_path_remote }}"
   },
   "init": {
-    "system": "{{ util_init_system|default(util_init_system_default) }}"
+    "system": "{{ util_init_system|default(util_init_system_default) }}",
+    "service_dir": "{{ util_init_service_dir|default(util_init_service_dir_default) }}",
+    "service_mode": "{{ util_init_service_mode|default(util_init_service_mode_default) }}"
   },
   "modules": {
 {% if ansible_os_family in ('Debian') %}
