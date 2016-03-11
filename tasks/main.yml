@@ -1,4 +1,24 @@
 ---
+- name: register ansible_ssh_pipelining
+  tags: util
+  set_fact:
+    util_fact_ssh_pipelining: "{{ true if ansible_ssh_pipelining|default(false) else false }}"
+
+# This workaround disables requiretty for sudo if pipelining is requested.
+# We need to do this early to make the rest work with pipelining.
+# Eventually this will not be necessary anymore. There is a workaround in
+# ansible devel: https://github.com/ansible/ansible/pull/13200
+- name: Disable requiretty in SUDO
+  tags: util
+  become: true
+  when: "{{ util_fact_ssh_pipelining }}"
+  vars:
+    ansible_ssh_pipelining: false
+  lineinfile:
+    state: absent
+    dest: /etc/sudoers
+    regexp: 'Defaults[ \t]+requiretty'
+
 - name: Assert supported platform
   tags: util
   assert:
