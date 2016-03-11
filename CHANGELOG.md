@@ -1,3 +1,28 @@
+# 2.0.4
+Anja Siek (1):
+
+* need default empty list to fix warning
+
+Georg Hopp (11):
+
+* Disable requiretty in SUDO if pipelining is requested.
+* Fix indentation
+* fix when condition
+* Register custom var for pipelining as we overwrite ansible\_ssh\_pipelining for that task.
+* Style cleanup
+* Disable requiretty in SUDO if pipelining is requested.
+* Fix indentation
+* fix when condition
+* Register custom var for pipelining as we overwrite ansible\_ssh\_pipelining for that task.
+* Style cleanup
+* add tag
+
+Mark Kusch (3):
+
+* Fix deprecation warning and integrate service management configuration vars
+* Add service management configuration vars to local facts
+* Add documentation for service configuration facts
+
 # 2.0.3
 
 Mark Kusch (1):
