@@ -1,5 +1,6 @@
 ---
 - name: register ansible_ssh_pipelining
+  tags: util
   set_fact:
     util_fact_ssh_pipelining: "{{ true if ansible_ssh_pipelining|default(false) else false }}"
 
