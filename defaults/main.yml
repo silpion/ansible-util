@@ -76,3 +76,4 @@ util_apt_cache_valid_time: 3600
 #   when ansible_distribution == 'CentOS'
 util_epel_enable: true
 util_epel_baseurl: https://download.fedoraproject.org/pub/epel
+util_package_list_ansible_deps_epel: []
