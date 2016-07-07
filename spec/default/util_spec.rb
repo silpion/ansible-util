@@ -29,15 +29,70 @@
 
 require 'spec_helper'
 
-describe 'Testing ansible-util local facts' do
+describe 'Testing for installed packages' do
+  describe package('python-httplib2'), :if => os[:family] == 'archlinux' do
+    it { should be_installed }
+  end
+
+  describe package('python-httplib2'), :if => os[:family] == 'debian' do
+    it { should be_installed }
+  end
+
+  %w[
+    python-httplib2
+    libselinux-python
+    libsemanage-python
+    policycoreutils-python
+  ].each do |pkg|
+    describe package(pkg), :if => os[:family] == 'redhat' do
+      it { should be_installed }
+    end
+  end
+
+  describe package('python-httplib2'), :if => os[:family] == 'ubuntu' do
+    it { should be_installed }
+  end
+end
+
+describe 'Testing ansible local facts' do
   describe file('/etc/ansible/facts.d/util.fact') do
     it { should be_file }
     it { should be_mode '644' }
     it { should be_owned_by 'root' }
     it { should be_grouped_into 'root' }
-    its(:content) { should match /vendor = "Silpion"/ }
-    its(:content) { should match /vendor_url = "http:\/\/silpion.de"/ }
-    its(:content) { should match /vendor_github = "https:\/\/github.com\/silpion"/ }
-    its(:content) { should match /role_version = "0.1.0"/ }
+    its(:content) { should match /"role_version": "2\.0\.5"/ }
+    its(:content) { should match /"template_use_cow": "True"/ }
+    its(:content) { should match /"persistent_data_path": "\/usr\/local\/src\/ansible\/data"/ }
+    its(:content) { should match /"allow_reload": "True"/ }
+    its(:content) { should match /"allow_restart": "True"/ }
+  end
+
+  describe file('/etc/ansible/facts.d/util.fact'), :if => os[:family] == 'archlinux' do
+    its(:content) { should match /"package_state": "present"/ }
+    its(:content) { should match /"system": "systemd"/ }
+    its(:content) { should match /"service_dir": "\/etc\/systemd\/system"/ }
+    its(:content) { should match /"service_mode": "644"/ }
+  end
+
+  describe file('/etc/ansible/facts.d/util.fact'), :if => os[:family] == 'debian' do
+    its(:content) { should match /"package_state": "installed"/ }
+    its(:content) { should match /"system": "systemd"/ }
+    its(:content) { should match /"service_dir": "\/etc\/systemd\/system"/ }
+    its(:content) { should match /"service_mode": "644"/ }
+  end
+
+  describe file('/etc/ansible/facts.d/util.fact'), :if => os[:family] == 'redhat' do
+    its(:content) { should match /"package_state": "present"/ }
+    its(:content) { should match /"system": "systemd"/ }
+    its(:content) { should match /"service_dir": "\/etc\/systemd\/system"/ }
+    its(:content) { should match /"service_mode": "644"/ }
+  end
+
+  describe file('/etc/ansible/facts.d/util.fact'), :if => os[:family] == 'ubuntu' do
+    its(:content) { should match /"package_state": "installed"/ }
+    its(:content) { should match /"system": "upstart"/ }
+    its(:content) { should match /"service_dir": "\/etc\/init"/ }
+    its(:content) { should match /"service_mode": "644"/ }
+    its(:content) { should match /"cache_valid_time": "3600"/ }
   end
 end
