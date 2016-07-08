@@ -30,11 +30,7 @@
 require 'spec_helper'
 
 describe 'Testing for installed packages' do
-  describe package('python-httplib2'), :if => os[:family] == 'archlinux' do
-    it { should be_installed }
-  end
-
-  describe package('python-httplib2'), :if => os[:family] == 'debian' do
+  describe package('python-httplib2'), :if => ['archlinux', 'debian', 'ubuntu'].include?(os[:family]) do
     it { should be_installed }
   end
 
@@ -49,9 +45,6 @@ describe 'Testing for installed packages' do
     end
   end
 
-  describe package('python-httplib2'), :if => os[:family] == 'ubuntu' do
-    it { should be_installed }
-  end
 end
 
 describe 'Testing ansible local facts' do
@@ -67,29 +60,21 @@ describe 'Testing ansible local facts' do
     its(:content) { should match /"allow_restart": "True"/ }
   end
 
-  describe file('/etc/ansible/facts.d/util.fact'), :if => os[:family] == 'archlinux' do
-    its(:content) { should match /"package_state": "present"/ }
+  describe file('/etc/ansible/facts.d/util.fact'), :if => ['archlinux', 'debian', 'redhat'].include?(os[:family]) do
     its(:content) { should match /"system": "systemd"/ }
     its(:content) { should match /"service_dir": "\/etc\/systemd\/system"/ }
     its(:content) { should match /"service_mode": "644"/ }
   end
 
-  describe file('/etc/ansible/facts.d/util.fact'), :if => os[:family] == 'debian' do
+  describe file('/etc/ansible/facts.d/util.fact'), :if => ['archlinux', 'redhat'].include?(os[:family]) do
+    its(:content) { should match /"package_state": "present"/ }
+  end
+
+  describe file('/etc/ansible/facts.d/util.fact'), :if => ['debian', 'ubuntu'].include?(os[:family]) do
     its(:content) { should match /"package_state": "installed"/ }
-    its(:content) { should match /"system": "systemd"/ }
-    its(:content) { should match /"service_dir": "\/etc\/systemd\/system"/ }
-    its(:content) { should match /"service_mode": "644"/ }
-  end
-
-  describe file('/etc/ansible/facts.d/util.fact'), :if => os[:family] == 'redhat' do
-    its(:content) { should match /"package_state": "present"/ }
-    its(:content) { should match /"system": "systemd"/ }
-    its(:content) { should match /"service_dir": "\/etc\/systemd\/system"/ }
-    its(:content) { should match /"service_mode": "644"/ }
   end
 
   describe file('/etc/ansible/facts.d/util.fact'), :if => os[:family] == 'ubuntu' do
-    its(:content) { should match /"package_state": "installed"/ }
     its(:content) { should match /"system": "upstart"/ }
     its(:content) { should match /"service_dir": "\/etc\/init"/ }
     its(:content) { should match /"service_mode": "644"/ }
