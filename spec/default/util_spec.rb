@@ -53,7 +53,7 @@ describe 'Testing ansible local facts' do
     it { should be_mode '644' }
     it { should be_owned_by 'root' }
     it { should be_grouped_into 'root' }
-    its(:content) { should match /"role_version": "2\.0\.5"/ }
+    its(:content) { should match /"role_version": "2\.0\.4"/ }
     its(:content) { should match /"template_use_cow": "True"/ }
     its(:content) { should match /"persistent_data_path": "\/usr\/local\/src\/ansible\/data"/ }
     its(:content) { should match /"allow_reload": "True"/ }
