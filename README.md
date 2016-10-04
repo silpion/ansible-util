@@ -99,6 +99,7 @@ and we are most happy for filed issues or pull requests.
 * ``util_template_use_cow``: Whether to add ``{{ ansible_managed }}`` or a fancy cow to templates (boolean, default: ``true``)
 * ``util_package_list_custom``: Custom list of packages to be installed (list, default: ``[]``)
 * ``util_init_system``: Allow to override init system configuration to be used for service templates (string, default: ``undefined``)
+* ``util_path_to_lib_role``: configure path to lib-role, which can get configured via silpion.lib role (string, default: ``{{ lib_roles_path }}``)
 
 ### util_init_system
 

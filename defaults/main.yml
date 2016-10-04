@@ -77,3 +77,6 @@ util_apt_cache_valid_time: 3600
 util_epel_enable: true
 util_epel_baseurl: https://download.fedoraproject.org/pub/epel
 util_package_list_ansible_deps_epel: []
+
+# configure path to lib role
+util_path_to_lib_role: "{{ lib_roles_path|default(playbook_dir + '/roles') }}"
