@@ -29,12 +29,12 @@
 
 - name: Include --check mode detection
   tags: util
-  include: ../../silpion.lib/tasks/checkmodedetection.yml
+  include: "{{ util_path_to_lib_role }}/silpion.lib/tasks/checkmodedetection.yml"
 
 
 - name: Include OS specific configuration
   tags: util
-  include: ../../silpion.lib/tasks/os-specific-vars.yml
+  include: "{{ util_path_to_lib_role }}/silpion.lib/tasks/os-specific-vars.yml"
 
 
 - name: Assert role configuration
@@ -152,6 +152,6 @@
 # Add some facts for other roles to use
 - name: Include local facts tasks
   tags: util
-  include: ../../silpion.lib/tasks/localfacts.yml
+  include: "{{ util_path_to_lib_role }}/silpion.lib/tasks/localfacts.yml"
   vars:
     namespace: util

@@ -1,7 +1,11 @@
 ### Files to be ignored by Git ###
 
+# Ruby
+Gemfile.lock
+
 # Vagrant
 /\.vagrant/
+/tests/roles/
 
 # IntelliJ IDEA
 /*\.ipr
@@ -14,11 +18,19 @@
 /\.project
 /\.settings/
 
+# Emacs
+.*~
+
+# Python
+**/*.pyc
+
 # Mac
 **/\.DS_Store
 
 # Custom
 /temp/
 /tmp/
-\.*\.swp
 envvars-vagrant
+\.*\.swp
+\.*\.swo
+\.environ
