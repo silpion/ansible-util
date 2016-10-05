@@ -1,4 +1,22 @@
+# 2.0.5
+
+Alvaro Aleman (1):
+
+* Install policycoreutils-python on EL
+
+Anja Siek (2):
+
+* use generator updates
+* use variable instead of hardcoded
+
+Mark Kusch (3):
+
+* Make tests os-family specific
+* Have spec tests be less repetitive
+* Fixup spec tests for role\_version
+
 # 2.0.4
+
 Anja Siek (1):
 
 * need default empty list to fix warning
