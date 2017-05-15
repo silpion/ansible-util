@@ -11,7 +11,7 @@
 - name: Disable requiretty in SUDO
   tags: util
   become: true
-  when: "{{ util_fact_ssh_pipelining }}"
+  when: util_fact_ssh_pipelining
   vars:
     ansible_ssh_pipelining: false
   lineinfile:
@@ -77,11 +77,13 @@
 - name: Register SELinux state
   tags: util
   become: true
-  always_run: true
   ignore_errors: true
   failed_when: false
   changed_when: false
+  check_mode: false
   register: util_registered_selinux_state
+  args:
+    warn: false
   command: selinuxenabled
 
 - name: Install Python SELinux bindings
@@ -89,8 +91,7 @@
   become: true
   when: util_registered_selinux_state.rc == 0
   with_items: "{{ util_package_list_selinux }}"
-  action: "{{ ansible_pkg_mgr }}"
-  args:
+  package:
     state: "{{ util_package_state }}"
     name: "{{ item }}"
 
@@ -107,8 +108,10 @@
   when:
     - ansible_os_family == 'RedHat'
     - (((ansible_local|default([])).util|default([])).epel|default([])).enable is undefined or ansible_local.util.epel.enable != true
-  always_run: true
   register: util_registered_installed_repos
+  check_mode: false
+  args:
+    warn: no
   command: yum repolist
 
 - name: Install EPEL
