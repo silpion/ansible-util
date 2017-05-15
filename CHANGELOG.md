@@ -1,3 +1,17 @@
+# 206
+Alvaro Aleman (1):
+
+* Add github pr template
+
+Anja Siek (1):
+
+* fix broken when conditions for ansible 2.3
+
+Mark Kusch (2):
+
+* Fix 2.3 and 2.4 deprecation
+* s/no/false/g: "no" is not meant to be used as boolean in Silpion Styleguide
+
 # 2.0.5
 
 Alvaro Aleman (1):
