@@ -111,7 +111,7 @@
   register: util_registered_installed_repos
   check_mode: false
   args:
-    warn: no
+    warn: false
   command: yum repolist
 
 - name: Install EPEL
